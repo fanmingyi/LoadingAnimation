@@ -1,5 +1,6 @@
-package com.example.myapplication;
+﻿package com.example.myapplication;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -46,8 +47,6 @@ public class My extends FrameLayout {
 
 
 
-    //上升的图片
-    int allImgUp[] = {R.mipmap.p1,R.mipmap.p3,R.mipmap.p5,R.mipmap.p7};
 
     //下沉图片
     int allImgDown [] = {R.mipmap.p2,R.mipmap.p4,R.mipmap.p6,R.mipmap.p8};
@@ -62,6 +61,8 @@ public class My extends FrameLayout {
     int downHeight = 2;
     private Animation translateDown;
     private Animation translateUp;
+
+    private ObjectAnimator rotation;
 
 
     public My(Context context) {
@@ -82,7 +83,7 @@ public class My extends FrameLayout {
 
     //用于播放文字下沉和上浮动画传入的数值必须是 图片下沉和上升的一次时间
     public void initAnimation(int duration){
-        ValueAnimator animator =  ValueAnimator.ofFloat(maxElasticFactor/4, (float) (maxElasticFactor / 2.5),0);
+        ValueAnimator animator =  ValueAnimator.ofFloat(maxElasticFactor/4, (float) (maxElasticFactor / 1.5),0);
         animator.setDuration(duration/2);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -134,8 +135,12 @@ public class My extends FrameLayout {
         translateDown.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                iv.setImageResource(allImgUp[indexImgFlag]);
+                iv.setImageResource(allImgDown[indexImgFlag]);
+                rotation = ObjectAnimator.ofFloat(iv, "rotation", 180f, 360f);
+                rotation.setDuration(1000);
+                rotation.start();
             }
+
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -144,6 +149,7 @@ public class My extends FrameLayout {
                 initAnimation(animationDuration);
 
             }
+
 
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -157,12 +163,18 @@ public class My extends FrameLayout {
             public void onAnimationStart(Animation animation) {
                 indexImgFlag = 1+indexImgFlag>=allImgDown.length?0:1+indexImgFlag;
                 iv.setImageResource(allImgDown[indexImgFlag]);
+                rotation = ObjectAnimator.ofFloat(iv, "rotation", 0.0f, 180f);
+                rotation.setDuration(1000);
+
+                rotation.start();
             }
+
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 //递归
                 iv.startAnimation(translateDown);
+
             }
 
             @Override
@@ -170,6 +182,12 @@ public class My extends FrameLayout {
 
             }
         });
+
+
+
+
+
+
     }
 
     boolean flagMeure;
