@@ -1,4 +1,4 @@
-﻿package com.example.myapplication;
+package com.example.myapplication;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
